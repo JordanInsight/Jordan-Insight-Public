@@ -34,6 +34,3 @@ We welcome contributions from users to continually improve our platform. Share y
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-## Contact
-
-For any inquiries or support, please contact us at support@triptojordan.com.
