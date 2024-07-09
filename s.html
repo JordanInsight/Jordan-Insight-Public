@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+    
+
+<form id="cuisineForm">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="cuisines[]" value="1" id="cuisineSteakhouseBarbecue">
+        <label class="form-check-label" for="cuisineSteakhouseBarbecue">
+            Steakhouse, Barbecue
+        </label>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="cuisines[]" value="2" id="cuisineAmericanSeafoodInternationalEuropeanHealthy">
+        <label class="form-check-label" for="cuisineAmericanSeafoodInternationalEuropeanHealthy">
+            American, Seafood, International, European, Healthy
+        </label>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="cuisines[]" value="3" id="cuisineMiddleEasternInternational">
+        <label class="form-check-label" for="cuisineMiddleEasternInternational">
+            Middle Eastern, International
+        </label>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="cuisines[]" value="4" id="cuisineMediterraneanMiddleEastern">
+        <label class="form-check-label" for="cuisineMediterraneanMiddleEastern">
+            Mediterranean, Middle Eastern
+        </label>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="cuisines[]" value="5" id="cuisineLebaneseArabic">
+        <label class="form-check-label" for="cuisineLebaneseArabic">
+            Lebanese, Arabic
+        </label>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="cuisines[]" value="7" id="cuisineFalafel">
+        <label class="form-check-label" for="cuisineFalafel">
+            Falafel
+        </label>
+    </div>
+    
+    <!-- Removed the inappropriate checkbox for clarity and appropriateness -->
+    
+    <button type="submit">Save Cuisines</button>
+</form>
+
+<!-- Placeholder for displaying selected cuisines -->
+<div id="selectedCuisines"></div>
+
+<script>
+    $(document).ready(function() {
+    $('#cuisineForm').submit(function(event) {
+        event.preventDefault();  // Prevent the form from submitting traditionally
+
+        // Array to store selected cuisines
+        var selectedCuisines = [];
+
+        // Find checked checkboxes and get the label text
+        $('input[type="checkbox"]:checked').each(function() {
+            selectedCuisines.push($(this).next('label').text().trim());
+        });
+
+        // Display the selected cuisines
+        $('#selectedCuisines').text('Selected Cuisines: ' + selectedCuisines.join(', '));
+
+        // Optional: Here you can also send the data to a server using AJAX or store it in local storage
+        // Example: localStorage.setItem('selectedCuisines', JSON.stringify(selectedCuisines));
+    });
+});
+
+</script>
+</body>
+</html>

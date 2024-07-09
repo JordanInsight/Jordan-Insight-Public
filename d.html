@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Itinerary</title>
+        <style>
+           body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.itinerary {
+    width: 80%;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.dates {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.date-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.date-btn:hover {
+    background-color: #0056b3;
+}
+
+.day {
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 0;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.day-header:hover {
+    background-color: #dee2e6;
+}
+
+.day-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #343a40;
+}
+
+.day-header a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.day-header a:hover {
+    text-decoration: underline;
+}
+
+.day-header .arrow {
+    font-size: 1.5em;
+    color: #343a40;
+}
+
+.day-content {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.details-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.vertical-line {
+    width: 20px;
+    height: 100%;
+    border-left: 2px solid #343a40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.circle-icon {
+    background-color: #fff;
+    border: 2px solid #343a40;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -12.5px; /* Center the circle on the line */
+}
+
+.circle-icon i {
+    color: #343a40;
+}
+
+.details-box {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px;
+    flex: 1;
+}
+
+.details-box p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #343a40;
+}
+
+.add-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.add-btn:hover {
+    background-color: #0056b3;
+}
+
+.button-row {
+    display: none;
+    margin: 10px 0;
+    text-align: left;
+}
+
+.icon-btn {
+    background: #fff;
+    border: 2px solid #ced4da;
+    border-radius: 50%;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.icon-btn i {
+    font-size: 1.2em;
+    color: #343a40;
+}
+
+.icon-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+/* Tooltip styles */
+.icon-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #343a40;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 0.8em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.icon-btn:hover::after {
+    opacity: 1;
+}
+
+.close-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+    background-color: #c82333;
+}
+
+/* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1000;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px 0 0 10px;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 0 0 0;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #343a40;
+}
+
+.sidebar-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.card:hover {
+    background-color: #f8f9fa;
+}
+
+.card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.card-details {
+    flex: 1;
+}
+
+.card-details h3 {
+    margin: 0;
+    font-size: 1.1em;
+    color: #343a40;
+}
+
+.card-details p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.next-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    text-align: center;
+    margin: 20px auto 0 auto;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.next-btn:hover {
+    background-color: #0056b3;
+}
+
+        </style>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="itinerary">
+            <div class="dates">
+                <button id="day1-btn" class="date-btn">Apr 2</button>
+                <button id="day2-btn" class="date-btn">Apr 3</button>
+                <button id="day3-btn" class="date-btn">Apr 4</button>
+            </div>
+            <div id="day1" class="day">
+                <div class="day-header" onclick="toggleDay('day1')">
+                    <h3>Tuesday, Apr 2 <a href="#">Add a location</a></h3>
+                    <span class="arrow">&#9660;</span>
+                </div>
+                <div class="day-content">
+                    <div class="details-container">
+                        <div class="vertical-line">
+                            <div class="circle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="details-box">
+                            <p>
+                                Add from your saves or search for items on
+                                Tripadvisor to build your day.
+                            </p>
+                        </div>
+                    </div>
+                    <button class="add-btn">+ Add</button>
+                    <div class="button-row">
+                        <button
+                            class="icon-btn"
+                            data-tooltip="Ticket"
+                            onclick="openSidebar('Food & Drink')"
+                        >
+                            <i class="fas fa-ticket-alt"></i>
+                        </button>
+                        <button
+                            class="icon-btn"
+                            data-tooltip="Places to stay"
+                            onclick="openSidebar('Places to stay')"
+                        >
+                            <i class="fas fa-hotel"></i>
+                        </button>
+                        <button
+                            class="icon-btn"
+                            data-tooltip="Food"
+                            onclick="openSidebar('Food & Drink')"
+                        >
+                            <i class="fas fa-utensils"></i>
+                        </button>
+                        <button
+                            class="icon-btn"
+                            data-tooltip="Location"
+                            onclick="openSidebar('Location')"
+                        >
+                            <i class="fas fa-map-marker-alt"></i>
+                        </button>
+                        <button
+                            class="icon-btn"
+                            data-tooltip="Document"
+                            onclick="openSidebar('Document')"
+                        >
+                            <i class="fas fa-file-alt"></i>
+                        </button>
+                        <button
+                            class="icon-btn"
+                            data-tooltip="Search"
+                            onclick="openSidebar('Search')"
+                        >
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="icon-btn close-btn" data-tooltip="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat the same structure for day2 and day3 -->
+            <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+            <div id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h2 id="sidebar-title">Sidebar</h2>
+                    <button class="close-btn" onclick="closeSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="sidebar-content" id="sidebar-content">
+                    <!-- Dynamic content will be inserted here -->
+                    <div class="card">
+                        <img
+                            src="https://via.placeholder.com/100"
+                            alt="Hotel"
+                        />
+                        <div class="card-details">
+                            <h3>Mijana</h3>
+                            <p>
+                                <i class="fas fa-utensils"></i> Restaurant •
+                                Middle Eastern
+                            </p>
+                            <p><i class="fas fa-star"></i> 294</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img
+                            src="https://via.placeholder.com/100"
+                            alt="Juice"
+                        />
+                        <div class="card-details">
+                            <h3>Palestine Mountains Juices</h3>
+                            <p><i class="fas fa-utensils"></i> Restaurant</p>
+                            <p><i class="fas fa-star"></i> 6</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img
+                            src="https://via.placeholder.com/100"
+                            alt="Restaurant"
+                        />
+                        <div class="card-details">
+                            <h3>Reem albawadi</h3>
+                            <p>
+                                <i class="fas fa-utensils"></i> Restaurant •
+                                Mediterranean • Middle Eastern
+                            </p>
+                            <p><i class="fas fa-star"></i> 447</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img
+                            src="https://via.placeholder.com/100"
+                            alt="Ice Cream"
+                        />
+                        <div class="card-details">
+                            <h3>Dorado Ice Cream</h3>
+                            <p>
+                                <i class="fas fa-utensils"></i> Restaurant •
+                                Italian
+                            </p>
+                            <p><i class="fas fa-star"></i> 15</p>
+                        </div>
+                    </div>
+                    <button class="next-btn">Next</button>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                function toggleDay(dayId) {
+                    var day = $("#" + dayId);
+                    var content = day.find(".day-content");
+                    var arrow = day.find(".arrow");
+
+                    if (content.is(":visible")) {
+                        content.slideUp();
+                        arrow.html("&#9660;");
+                    } else {
+                        content.slideDown();
+                        arrow.html("&#9650;");
+                    }
+                }
+
+                $("#day1-btn").click(function () {
+                    toggleDay("day1");
+                });
+                $("#day2-btn").click(function () {
+                    toggleDay("day2");
+                });
+                $("#day3-btn").click(function () {
+                    toggleDay("day3");
+                });
+
+                $(".day-header").click(function () {
+                    var dayId = $(this).closest(".day").attr("id");
+                    toggleDay(dayId);
+                });
+
+                $(".add-btn").click(function () {
+                    $(this).hide();
+                    $(this).siblings(".button-row").show();
+                });
+
+                $(".close-btn").click(function () {
+                    $(this).closest(".button-row").hide();
+                    $(this).closest(".day-content").find(".add-btn").show();
+                });
+
+                window.openSidebar = function (content) {
+                    $("#overlay").fadeIn();
+                    $("#sidebar").css("transform", "translateX(0)");
+                    $("#sidebar-title").text(content);
+                    $("#sidebar-content").html(
+                        '<div class="card">' +
+                            '<img src="https://via.placeholder.com/100" alt="Hotel">' +
+                            '<div class="card-details">' +
+                            "<h3>Mijana</h3>" +
+                            '<p><i class="fas fa-utensils"></i> Restaurant • Middle Eastern</p>' +
+                            '<p><i class="fas fa-star"></i> 294</p>' +
+                            "</div></div>" +
+                            '<div class="card">' +
+                            '<img src="https://via.placeholder.com/100" alt="Juice">' +
+                            '<div class="card-details">' +
+                            "<h3>Palestine Mountains Juices</h3>" +
+                            '<p><i class="fas fa-utensils"></i> Restaurant</p>' +
+                            '<p><i class="fas fa-star"></i> 6</p>' +
+                            "</div></div>" +
+                            '<div class="card">' +
+                            '<img src="https://via.placeholder.com/100" alt="Restaurant">' +
+                            '<div class="card-details">' +
+                            "<h3>Reem albawadi</h3>" +
+                            '<p><i class="fas fa-utensils"></i> Restaurant • Mediterranean • Middle Eastern</p>' +
+                            '<p><i class="fas fa-star"></i> 447</p>' +
+                            "</div></div>" +
+                            '<div class="card">' +
+                            '<img src="https://via.placeholder.com/100" alt="Ice Cream">' +
+                            '<div class="card-details">' +
+                            "<h3>Dorado Ice Cream</h3>" +
+                            '<p><i class="fas fa-utensils"></i> Restaurant • Italian</p>' +
+                            '<p><i class="fas fa-star"></i> 15</p>' +
+                            "</div></div>" +
+                            '<button class="next-btn">Next</button>'
+                    ); // Placeholder content
+                    // Here you can add logic to load specific content for the sidebar
+                };
+
+                window.closeSidebar = function () {
+                    $("#overlay").fadeOut();
+                    $("#sidebar").css("transform", "translateX(100%)");
+                };
+            });
+        </script>
+    </body>
+</html>

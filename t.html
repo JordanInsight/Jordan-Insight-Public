@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Date Picker</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <link
+            rel="stylesheet"
+            href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+        />
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .container {
+                max-width: 600px;
+                margin: auto;
+                background: white;
+                padding: 20px;
+                text-align: center;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .month-button {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 5px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #fff;
+                cursor: pointer;
+            }
+            .month-button:hover {
+                background-color: #f0f0f0;
+            }
+            .month-button.active {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+            .day-slider {
+                width: 100%;
+                margin: 20px 0;
+            }
+            .day-slider input[type="range"] {
+                width: 100%;
+            }
+            .button-row {
+                text-align: center;
+                margin-top: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                margin: 5px;
+                border: none;
+                border-radius: 4px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #0056b3;
+            }
+            .highlight {
+                background-color: #90ee90; /* Light green color for highlighted days */
+                border-radius: 15px; /* Rounded corners for highlight */
+                box-shadow: 0 0 10px #333; /* Shadow effect for depth */
+            }
+            .highlight a {
+                color: #005f5f !important; /* Contrast color for text to ensure visibility */
+                font-weight: bold !important; /* Make date text bold */
+            }
+            #datepicker {
+                margin-top: 20px; /* Add some spacing above the calendar */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <form id="form"  method="get" >
+            <h2>Choose the number of days & the month</h2>
+
+            <div class="day-slider">
+                <input type="range" min="1" max="7" />
+            </div>
+
+            <div id="month-buttons">
+                <div class="month-button">January</div>
+                <div class="month-button">February</div>
+                <div class="month-button">March</div>
+                <div class="month-button">April</div>
+                <div class="month-button">May</div>
+                <div class="month-button">June</div>
+                <div class="month-button">July</div>
+                <div class="month-button">August</div>
+                <div class="month-button">September</div>
+                <div class="month-button">October</div>
+                <div class="month-button">November</div>
+                <div class="month-button">December</div>
+            </div>
+
+            <div class="button-row">
+                <button type="button">BACK</button>
+                <button type="submit">SUBMIT</button>           
+            </div>
+
+            <p>Your 5 day trip starts in June</p>
+        </div>
+        <div id="datepicker"></div>
+    </form>
+        <script>
+            $(document).ready(function () {
+                var $slider = $('.day-slider input[type="range"]');
+                var $daysDisplay = $(".container p");
+                var $monthButtons = $("#month-buttons div");
+                var $calendar = $("#datepicker");
+                var currentYear = new Date().getFullYear();
+                var currentMonth = new Date().getMonth();
+
+                // Event handler for month button click
+                $monthButtons.on("click", function () {
+                    $monthButtons.removeClass("active");
+                    $(this).addClass("active");
+                    currentMonth = $(this).index();
+                    $calendar.datepicker(
+                        "setDate",
+                        new Date(currentYear, currentMonth, 1)
+                    );
+                    updateDisplay();
+                    highlightRandomDays();
+                });
+
+                // Update the number of days and the selected month in the display
+                function updateDisplay() {
+                    var numberOfDays = $slider.val();
+                    var activeMonth = $monthButtons.filter(".active").text();
+                    $daysDisplay.text(
+                        "Your " +
+                            numberOfDays +
+                            " day trip starts in " +
+                            activeMonth
+                    );
+                }
+
+                // Highlight random consecutive days
+                function highlightRandomDays() {
+                    var daysInMonth = new Date(
+                        currentYear,
+                        currentMonth + 1,
+                        0
+                    ).getDate();
+                    var numberOfDaysToHighlight = parseInt($slider.val(), 10);
+                    var startDay =
+                        Math.floor(
+                            Math.random() *
+                                (daysInMonth - numberOfDaysToHighlight + 1)
+                        ) + 1;
+
+                    // Clear previously highlighted days
+                    $calendar.find("td").removeClass("highlight");
+
+                    // Highlight new random consecutive days
+                    for (var i = 0; i < numberOfDaysToHighlight; i++) {
+                        var dayToHighlight = startDay + i;
+                        $calendar
+                            .find("td")
+                            .filter(function () {
+                                var date = $(this).data("date");
+                                return (
+                                    date && date.getDate() === dayToHighlight
+                                );
+                            })
+                            .addClass("highlight");
+                    }
+                }
+
+                // Initialize datepicker
+                $calendar.datepicker({
+                    defaultDate: new Date(currentYear, currentMonth, 1),
+                    changeMonth: true,
+                    changeYear: true,
+                    onChangeMonthYear: function (year, month) {
+                        currentYear = year;
+                        currentMonth = month - 1;
+                        $monthButtons.removeClass("active");
+                        $monthButtons.eq(currentMonth).addClass("active");
+                        updateDisplay();
+                        highlightRandomDays();
+                    },
+                });
+
+                // Event handler for slider change
+                $slider.on("input", function () {
+                    updateDisplay();
+                    highlightRandomDays();
+                });
+
+                // Add event listener for the "NEXT" button
+                $('#form').on('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                var selectedMonth = $monthButtons.filter('.active').text();
+                var selectedMonthIndex = currentMonth + 1; // +1 because JavaScript months are 0-indexed
+                var selectedDays = $slider.val();
+                console.log("Month Name:", selectedMonth);
+                console.log("Month Number:", selectedMonthIndex);
+                console.log("Number of Days:", selectedDays);
+
+                // Optional: Submit the form programmatically if needed
+                // this.submit();
+            });
+
+                // Set the initial state of the display
+                updateDisplay();
+                highlightRandomDays();
+            });
+        </script>
+    </body>
+</html>

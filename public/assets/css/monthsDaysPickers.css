@@ -1,0 +1,78 @@
+.months-days-pickers {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.month-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.month-button:hover {
+    background-color: #f0f0f0;
+}
+
+.month-button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.day-slider {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.day-slider input[type="range"] {
+    width: 100%;
+}
+
+.button-row {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.months-submit-buttons {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.months-submit-buttons:hover {
+    background-color: #0056b3;
+}
+
+.highlight {
+    background-color: #90ee90;
+    /* Light green color for highlighted days */
+    border-radius: 15px;
+    /* Rounded corners for highlight */
+    box-shadow: 0 0 10px #333;
+    /* Shadow effect for depth */
+}
+
+.highlight a {
+    color: #005f5f !important;
+    /* Contrast color for text to ensure visibility */
+    font-weight: bold !important;
+    /* Make date text bold */
+}
+
+#datepicker {
+    margin-top: 20px;
+    /* Add some spacing above the calendar */
+}
